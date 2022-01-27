@@ -90,6 +90,19 @@ add_action('admin_init', function () {
     update_post_meta($product_id, '_product_attributes', array_merge($_product_attributes, $data));
 });
 
+/**
+ * If woocommerce activated, and also if shop or specefic category page
+ */
+
+add_action('wp_footer', function () {
+    if (class_exists('woocommerce')) {
+        if (is_shop() || is_product_category('category_slug')) {
+            echo 'this is shop page';
+        }
+    }
+});
+
+
 
 /**
  * 
