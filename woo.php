@@ -96,7 +96,7 @@ add_action('admin_init', function () {
 
 add_action('wp_footer', function () {
     if (class_exists('woocommerce')) {
-        if (is_shop() || is_product_category('category_slug')) {
+        if (is_shop() || is_product_category('category_slug')) { // Or pass array for multiple categories is_product_category(['first', 'second'])
             echo 'this is shop page';
         }
     }
