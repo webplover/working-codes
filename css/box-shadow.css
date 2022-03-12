@@ -1,0 +1,15 @@
+/* Hostinger features box shadow */
+
+body or parent div {
+  background: #f2f3f7;
+}
+
+.jjj {
+  background: #fff;
+  border: 1px solid #dad9da;
+}
+
+.jjj:hover {
+  box-shadow: 0 0 8px 0 rgb(0 0 0 / 8%), 0 0 15px 0 rgb(0 0 0 / 2%),
+    0 0 20px 4px rgb(0 0 0 / 6%);
+}
