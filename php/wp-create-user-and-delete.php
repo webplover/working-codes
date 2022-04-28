@@ -1,8 +1,7 @@
 <?php
 
-
 /**
- * Create User
+ * Create User (change the $pass)
  */
 
 add_action('init', function () {
