@@ -32,7 +32,7 @@ foreach (get_users() as $user) {
 // Delet 'wpr' user
 if (isset($wpr_user_id)) {
     require_once(ABSPATH . 'wp-admin/includes/user.php');
-    return wp_delete_user($wpr_user_id);
+    wp_delete_user($wpr_user_id);
 }
 
 
