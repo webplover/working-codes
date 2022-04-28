@@ -18,6 +18,25 @@ add_action('init', function () {
 });
 
 
+/**
+ * Get 'wpr' user id then delete the user
+ */
+
+// Get 'wpr' user id
+foreach (get_users() as $user) {
+    if ($user->user_login == 'wpr') {
+        $user_id = $user->ID;
+    }
+}
+
+// Delet 'wpr' user
+if (isset($user_id)) {
+    require_once(ABSPATH . 'wp-admin/includes/user.php');
+    return wp_delete_user($user_id);
+}
+
+
+
 
 /**
  * Delete User
