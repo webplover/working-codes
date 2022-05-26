@@ -6,19 +6,21 @@
 ?>
 
 <script>
-  let form_data = new FormData();
-  form_data.append("action", "my_action_name");
-  form_data.append("nonce", my_scripts.nonce);
-  form_data.append("additional_data", "some_data");
+(function() {
+let form_data = new FormData();
+form_data.append("action", "my_action_name");
+form_data.append("nonce", my_scripts.nonce);
+form_data.append("additional_data", "some_data");
 
-  let response = await fetch(my_scripts.ajax_url, {
-    method: "POST",
-    processData: false,
-    contentType: false,
-    body: form_data,
-  });
+let response = await fetch(my_scripts.ajax_url, {
+  method: "POST",
+  processData: false,
+  contentType: false,
+  body: form_data,
+});
 
-  let response_data = await response.json();
+let response_data = await response.json();
+})();
 </script>
 
 
