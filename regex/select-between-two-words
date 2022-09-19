@@ -1,0 +1,5 @@
+word word2 :
+
+this will select 'word2' between 'word ' and ' :'
+
+(?<=word\s).*(?=\s:)
