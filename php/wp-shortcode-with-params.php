@@ -5,5 +5,5 @@ add_shortcode('shortcode-with-params', function ($attr) {
         'url' => '#'
     ], $attr);
 
-    return $args['color'];
+    return $args['url'];
 });
