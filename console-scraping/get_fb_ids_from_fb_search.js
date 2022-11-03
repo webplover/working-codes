@@ -10,7 +10,10 @@ document
   });
 
 // Get group ids from links
-var group_ids = links.map((link) => link.match(/(?<=groups\/).*(?=\/)/)[0]);
+var all_group_ids = links.map((link) => link.match(/(?<=groups\/).*(?=\/)/)[0]);
 
 // Get none number ids
-var non_number_ids = group_ids.filter((id) => isNaN(id));
+var non_number_ids = all_group_ids.filter((id) => isNaN(id));
+
+// Get number ids
+var number_ids = all_group_ids.filter((id) => !isNaN(id));
