@@ -12,8 +12,8 @@ document
 // Get group ids from links
 var all_group_ids = links.map((link) => link.match(/(?<=groups\/).*(?=\/)/)[0]);
 
-// Get none number ids
-var non_number_ids = all_group_ids.filter((id) => isNaN(id));
-
 // Get number ids
 var number_ids = all_group_ids.filter((id) => !isNaN(id));
+
+// Get none number ids
+var non_number_ids = all_group_ids.filter((id) => isNaN(id));
