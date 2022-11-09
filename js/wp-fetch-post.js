@@ -4,8 +4,7 @@
     body: JSON.stringify({ status: "draft" }),
     headers: {
       Authorization: "Basic " + btoa("username:password"),
-      "Content-Type":
-        "application/json; charset=UTF-8; application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
   });
 })();
