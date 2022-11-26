@@ -6,7 +6,7 @@ import fetch from "node-fetch";
   let credential =
     "Basic " + Buffer.from(`${username}:${password}`).toString("base64");
 
-  await fetch("https://onlydev.ml/onlineacademy/wp-json/wp/v2/posts/36114", {
+  await fetch("https://example.com/posts/123", {
     method: "post",
     body: JSON.stringify(body),
     headers: {
