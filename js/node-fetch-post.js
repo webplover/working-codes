@@ -1,7 +1,14 @@
 import fetch from "node-fetch";
 
 (async function () {
-  let body = { status: "draft" };
+  let body = {
+    title: "Post Title",
+    content: "Post Content",
+    status: "draft",
+    acf: {
+      field_name: "set-this-value",
+    },
+  };
 
   let credential =
     "Basic " + Buffer.from(`${username}:${password}`).toString("base64");
