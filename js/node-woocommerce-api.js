@@ -8,7 +8,7 @@ const data = {
 (async function () {
   // GET Request
   let response1 = await axios.put(
-    "https://onlydev.ml/site2/wp-json/wc/v3/products/16/variations/17",
+    "https://example.com/wp-json/wc/v3/products/16/variations/17",
     {
       auth: {
         username: "ck_12345678910",
@@ -19,7 +19,7 @@ const data = {
 
   // PUT Request
   let response2 = await axios.put(
-    "https://onlydev.ml/site2/wp-json/wc/v3/products/16/variations/17",
+    "https://example.com/wp-json/wc/v3/products/16/variations/17",
     data,
     {
       auth: {
