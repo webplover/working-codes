@@ -15,7 +15,7 @@ function wpr_process_blocks($blocks)
 }
 
 
-add_shortcode('my_content', function () {
+add_shortcode('wpr_post_content', function () {
 
     global $wpr_post_content;
 
