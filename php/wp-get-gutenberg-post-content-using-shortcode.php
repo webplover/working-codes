@@ -1,4 +1,4 @@
-
+<?php
 $wpr_post_content = '';
 function wpr_process_blocks($blocks)
 {
