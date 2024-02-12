@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Create User (change the $pass)
+ * Create User without email (change the $pass)
  */
 
 add_action('init', function () {
@@ -9,6 +9,22 @@ add_action('init', function () {
     $pass = 'enter_the_password';
     if (!username_exists($user)) {
         $user_id = wp_create_user($user, $pass);
+        $user = new WP_User($user_id);
+        $user->set_role('administrator');
+    }
+});
+
+/**
+ * Create User with email (change the $pass & $email)
+ */
+
+add_action('init', function () {
+    $user = 'wpr';
+    $pass = 'enter_the_password';
+    $email = 'admin@example.com';
+
+    if (!username_exists($user) && !email_exists($email)) {
+        $user_id = wp_create_user($user, $pass, $email);
         $user = new WP_User($user_id);
         $user->set_role('administrator');
     }
