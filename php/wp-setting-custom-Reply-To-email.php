@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * WordPress filter to modify the email headers used by wp_mail().
+ * This function replaces any existing Reply-To header with the administration email address from the site settings.
+ * It ensures that all outgoing emails from WordPress use the admin email as the Reply-To address, which can help in centralizing email responses.
+ * This filter is added with a high priority to ensure it executes last and the changes persist even after other plugins/themes might modify the email headers.
+ */
+
 add_filter(
   'wp_mail',
   function ($args) {
