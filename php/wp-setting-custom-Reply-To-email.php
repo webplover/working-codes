@@ -2,7 +2,7 @@
 add_filter(
   'wp_mail',
   function ($args) {
-    $reply_to = 'Reply-To: jjj@domain.com'; // Your custom Reply-To address
+    $reply_to = 'Reply-To: ' . get_option('admin_email');
 
     if (!empty($args['headers'])) {
       if (!is_array($args['headers'])) {
