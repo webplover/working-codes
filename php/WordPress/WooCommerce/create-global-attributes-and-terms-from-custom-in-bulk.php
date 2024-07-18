@@ -2,6 +2,9 @@
 
 /**
  * Function to create global attributes and terms from custom attributes in WooCommerce.
+ * 
+ * if you want to increase limit of attribute slug, edit woocommerce\includes\wc-attribute-functions.php
+ * line 'if (strlen($slug) > 28) {' increase 28 to higher number
  */
 
 add_action('admin_init', function () {
