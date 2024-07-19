@@ -53,7 +53,7 @@ add_action('admin_init', function () {
     }
 
     // Check if the attribute already exists
-    $attribute_id = wc_attribute_taxonomy_id_by_name($attribute_name);
+    $attribute_id = wc_attribute_taxonomy_id_by_name($attribute_slug);
 
     if (!$attribute_id) {
       // Add the attribute
