@@ -26,7 +26,14 @@ add_action('admin_init', function () {
         continue;
       }
 
-      $taxonomy = 'pa_' . wc_sanitize_taxonomy_name($attribute_name);
+      $taxonomy = wc_sanitize_taxonomy_name($attribute_name);
+
+      // Trim the taxonomy name to 26 characters if its length is more than 26
+      if (strlen($taxonomy) > 26) {
+        $taxonomy = substr($taxonomy, 0, 26);
+      }
+
+      $taxonomy = 'pa_' . $taxonomy;
 
       // Check if the global attribute exists
       if (taxonomy_exists($taxonomy)) {
