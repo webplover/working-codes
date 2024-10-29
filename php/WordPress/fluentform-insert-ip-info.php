@@ -38,7 +38,8 @@ function wpr_getVisIpAddr_info()
 
   $ip = wpr_getVisIpAddr();
 
-  $ipInfo = wp_remote_get("http://ip-api.com/json/$ip");
+  // $ipInfo = wp_remote_get("http://ip-api.com/json/$ip"); // Unlimited, without coutry_code info
+  $ipInfo = wp_remote_get("http://ipwho.is/$ip"); // 10,000 requests per month, more data including coutry_code
 
   if (!is_wp_error($ipInfo)) {
     $body = wp_remote_retrieve_body($ipInfo);
