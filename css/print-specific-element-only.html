@@ -1,0 +1,32 @@
+<div id="printableArea">
+    <h2>This content will be printed</h2>
+    <p>Some content here...</p>
+</div>
+
+<div class="non-printable">
+    <p>This won't be printed</p>
+</div>
+
+<button onclick="printDiv('printableArea')">Print Selected Area</button>
+
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printableArea, #printableArea * {
+            visibility: visible;
+        }
+        #printableArea {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    }
+</style>
+
+<script>
+    function printDiv(divId) {
+        window.print();
+    }
+</script>
