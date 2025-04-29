@@ -4,10 +4,12 @@ jQuery(async function ($) {
     const {
       geoplugin_region,
       geoplugin_city,
+      geoplugin_countryName,
       geoplugin_locationAccuracyRadius,
     } = response;
     const region = geoplugin_region;
     const city = geoplugin_city;
+    const country = geoplugin_countryName;
     const radius =
       geoplugin_locationAccuracyRadius && geoplugin_locationAccuracyRadius > 0
         ? geoplugin_locationAccuracyRadius
