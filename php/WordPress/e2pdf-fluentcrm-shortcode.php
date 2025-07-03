@@ -4,6 +4,10 @@
  * Shortcode to generate an E2Pdf download button using FluentCRM subscriber data,
  * as E2Pdf plugin does not natively support FluentCRM integration.
  * 
+ * How to use:
+ * In the E2Pdf template, use [e2pdf-argX] shortcodes
+ * (e.g., [e2pdf-arg1], [e2pdf-arg2], etc.) to display subscriber data dynamically.
+ * 
  * Required Plugin: https://wordpress.org/plugins/e2pdf/
  */
 
