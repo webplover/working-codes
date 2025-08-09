@@ -10,6 +10,86 @@
 // Set timezone to Pakistan Standard Time
 date_default_timezone_set('Asia/Karachi');
 
+function uploadFileWithSpeedControl($conn_id, $target_file, $local_path, $speed)
+{
+  $chunk_size = 8192; // 8KB default chunk size
+  $delay = 0; // Delay between chunks in microseconds
+
+  // Set chunk size and delay based on speed setting
+  switch ($speed) {
+    case 'slow':
+      $chunk_size = 4096; // 4KB chunks
+      $delay = 500000; // 0.5 second delay
+      break;
+    case 'very_slow':
+      $chunk_size = 2048; // 2KB chunks
+      $delay = 1000000; // 1 second delay
+      break;
+    case 'fast':
+      $chunk_size = 16384; // 16KB chunks
+      $delay = 0; // No delay
+      break;
+    default: // normal
+      $chunk_size = 8192; // 8KB chunks
+      $delay = 100000; // 0.1 second delay
+      break;
+  }
+
+  // Open local file for reading
+  $local_file = fopen($local_path, 'rb');
+  if (!$local_file) {
+    return ['success' => false, 'error' => 'Cannot open local file for reading'];
+  }
+
+  // Create temporary file for FTP upload
+  $temp_file = tmpfile();
+  if (!$temp_file) {
+    fclose($local_file);
+    return ['success' => false, 'error' => 'Cannot create temporary file'];
+  }
+
+  // Upload file in chunks with speed control
+  try {
+    while (!feof($local_file)) {
+      $chunk = fread($local_file, $chunk_size);
+      if ($chunk === false) {
+        throw new Exception('Error reading local file');
+      }
+
+      fwrite($temp_file, $chunk);
+
+      // Add delay for speed control (except for fast mode)
+      if ($delay > 0) {
+        usleep($delay);
+      }
+
+      // Allow PHP to handle other processes
+      if (function_exists('set_time_limit')) {
+        set_time_limit(30); // Reset execution time limit
+      }
+    }
+
+    // Reset file pointer to beginning
+    rewind($temp_file);
+
+    // Upload the temporary file to FTP
+    $upload_result = ftp_fput($conn_id, $target_file, $temp_file, FTP_BINARY);
+
+    fclose($local_file);
+    fclose($temp_file);
+
+    if ($upload_result) {
+      return ['success' => true, 'error' => null];
+    } else {
+      return ['success' => false, 'error' => 'FTP upload failed'];
+    }
+  } catch (Exception $e) {
+    fclose($local_file);
+    fclose($temp_file);
+    return ['success' => false, 'error' => $e->getMessage()];
+  }
+}
+
 function formatFileSize($bytes, $precision = 2)
 {
   $units = array('B', 'KB', 'MB', 'GB', 'TB');
@@ -102,14 +182,43 @@ if (isset($_POST['upload_ftp'])) {
         $target_file = rtrim($remote_path, '/') . '/' . basename($local_path);
       }
 
-      // Upload file
-      if (ftp_put($conn_id, $target_file, $local_path, FTP_BINARY)) {
-        $file_size = formatFileSize(filesize($local_path));
-        $upload_message = "File '" . htmlspecialchars(basename($local_path)) . "' ({$file_size}) uploaded successfully to: " . htmlspecialchars($target_file);
-        $message_type = 'success';
+      // Get transfer speed setting (default: normal)
+      $transfer_speed = isset($_POST['transfer_speed']) ? $_POST['transfer_speed'] : 'normal';
+
+      // Upload file with speed control
+      if ($transfer_speed === 'normal' || $transfer_speed === 'very_fast') {
+        // Normal/Very Fast upload using ftp_put (no chunking)
+        if ($transfer_speed === 'very_fast') {
+          // Remove time limits and set optimal settings for very fast servers
+          if (function_exists('set_time_limit')) {
+            set_time_limit(0); // No time limit
+          }
+          if (function_exists('ini_set')) {
+            ini_set('memory_limit', '512M'); // Increase memory limit
+            ini_set('max_execution_time', 0); // No execution time limit
+          }
+        }
+
+        if (ftp_put($conn_id, $target_file, $local_path, FTP_BINARY)) {
+          $file_size = formatFileSize(filesize($local_path));
+          $speed_label = $transfer_speed === 'very_fast' ? ' (Very Fast Mode)' : '';
+          $upload_message = "File '" . htmlspecialchars(basename($local_path)) . "' ({$file_size}) uploaded successfully to: " . htmlspecialchars($target_file) . $speed_label;
+          $message_type = 'success';
+        } else {
+          $upload_message = "FTP upload failed. Please check the remote path and permissions.";
+          $message_type = 'error';
+        }
       } else {
-        $upload_message = "FTP upload failed. Please check the remote path and permissions.";
-        $message_type = 'error';
+        // Chunked upload with speed control
+        $result = uploadFileWithSpeedControl($conn_id, $target_file, $local_path, $transfer_speed);
+        if ($result['success']) {
+          $file_size = formatFileSize(filesize($local_path));
+          $upload_message = "File '" . htmlspecialchars(basename($local_path)) . "' ({$file_size}) uploaded successfully to: " . htmlspecialchars($target_file) . " (Speed: " . ucfirst($transfer_speed) . ")";
+          $message_type = 'success';
+        } else {
+          $upload_message = "FTP upload failed: " . $result['error'];
+          $message_type = 'error';
+        }
       }
 
       ftp_close($conn_id);
@@ -200,13 +309,18 @@ if (isset($_POST['upload_ftp'])) {
     }
 
     .form-group input[type="text"],
-    .form-group input[type="password"] {
+    .form-group input[type="password"],
+    .form-group select {
       width: 100%;
       max-width: 400px;
       padding: 8px 12px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 14px;
+    }
+
+    .form-group select {
+      background-color: white;
     }
 
     .custom-path-input {
@@ -368,6 +482,32 @@ if (isset($_POST['upload_ftp'])) {
           value="<?php echo isset($_POST['remote_path']) ? htmlspecialchars($_POST['remote_path']) : ''; ?>">
         <div class="info-text">
           Leave blank to upload to the FTP root directory.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="transfer_speed">Transfer Speed:</label>
+        <select id="transfer_speed" name="transfer_speed">
+          <option value="normal" <?php echo (isset($_POST['transfer_speed']) && $_POST['transfer_speed'] === 'normal') ? 'selected' : ''; ?>>
+            Normal (Standard upload) - Recommended
+          </option>
+          <option value="very_fast" <?php echo (isset($_POST['transfer_speed']) && $_POST['transfer_speed'] === 'very_fast') ? 'selected' : ''; ?>>
+            Very Fast (No limits, max speed) - For powerful servers only
+          </option>
+          <option value="fast" <?php echo (isset($_POST['transfer_speed']) && $_POST['transfer_speed'] === 'fast') ? 'selected' : ''; ?>>
+            Fast (16KB chunks, no delay) - For fast servers
+          </option>
+          <option value="slow" <?php echo (isset($_POST['transfer_speed']) && $_POST['transfer_speed'] === 'slow') ? 'selected' : ''; ?>>
+            Slow (4KB chunks, 0.5s delay) - For slow servers
+          </option>
+          <option value="very_slow" <?php echo (isset($_POST['transfer_speed']) && $_POST['transfer_speed'] === 'very_slow') ? 'selected' : ''; ?>>
+            Very Slow (2KB chunks, 1s delay) - For very slow servers
+          </option>
+        </select>
+        <div class="info-text">
+          <strong>Very Fast:</strong> Removes all time/memory limits - use only on powerful servers with fast connections.<br>
+          <strong>Normal/Fast:</strong> Good balance for most servers.<br>
+          <strong>Slow/Very Slow:</strong> Prevents server overload on limited resources.
         </div>
       </div>
 
