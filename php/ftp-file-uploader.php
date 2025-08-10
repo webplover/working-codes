@@ -287,6 +287,10 @@ if (isset($_POST['upload_ftp'])) {
       <strong>Current Directory:</strong> <?php echo htmlspecialchars(getcwd()); ?>
     </div>
 
+    <div class="message warning">
+      <strong>Note:</strong> If your browser shows a timeout error during upload, don't worry! The upload process continues running in the background on the server and will complete successfully. Check your FTP server after a few minutes to confirm the file has been uploaded.
+    </div>
+
     <?php if (!empty($upload_message)): ?>
       <div class="message <?php echo $message_type; ?>">
         <?php echo $upload_message; ?>
