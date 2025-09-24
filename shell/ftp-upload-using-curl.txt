@@ -1,0 +1,14 @@
+How to upload a file to FTP using curl
+--------------------------------------
+
+Command:
+    curl -T localfile.txt ftp://FTP_SERVER/ --user USERNAME:PASSWORD
+
+Example:
+    curl -T report.pdf ftp://123.123.123.123/ --user myuser:mypass
+
+Password rules
+--------------
+- Prefer simple passwords (letters, numbers, dash, underscore).
+- Avoid special characters like $, !, &, @, # (they can break commands).
+- If special characters are required, wrap the whole username:password in single quotes.
