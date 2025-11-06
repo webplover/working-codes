@@ -1,4 +1,22 @@
 jQuery(async function ($) {
+  function wpr_type_text(element, newText, cursorColor = "#000") {
+    return new Promise((resolve) => {
+      const cursor = `<span style="color:${cursorColor}">|</span>`;
+      let i = 0;
+
+      const addInterval = setInterval(function () {
+        if (i <= newText.length) {
+          element.html(newText.substring(0, i) + cursor);
+          i++;
+        } else {
+          clearInterval(addInterval);
+          element.html(newText);
+          resolve(); // Resolve the promise when typing is complete
+        }
+      }, 50);
+    });
+  }
+
   try {
     const response = await $.getJSON("https://ipinfo.io/json");
 
@@ -15,7 +33,7 @@ jQuery(async function ($) {
        *
        */
       await wpr_type_text(
-        $(".your-selector"),
+        $(".hero-first-section .home-hero-heading .wpr-inner-text"),
         ` - in ${city_region}`,
         "#00FFFF"
       );
